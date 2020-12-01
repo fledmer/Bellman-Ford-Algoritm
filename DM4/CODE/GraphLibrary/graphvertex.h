@@ -10,6 +10,7 @@ public:
     GraphVertex(std::string name);
     ~GraphVertex(){};
     std::string name;
+    int number;
     std::vector <GraphVertex *> child; // вершины связанные с данной.
     std::vector <int> edge_weight;
     void Push(GraphVertex *Vert);

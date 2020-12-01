@@ -18,6 +18,7 @@ GraphVertex* Graph::Find(string name)
     }
     return NULL;
 }
+
 GraphVertex* Graph::Find(GraphVertex *Vert)
 {
     for(auto x : GraphsVertex)
@@ -44,11 +45,13 @@ void Graph::Push(string fVert, string sVert)
     if(!Find(fVert)) //Проверяем наличие 1 вершины в графе
     {
         GraphVertex *Vert1 = new GraphVertex(fVert);
+        Vert1->number = this->GraphsVertex.size()-1;
         GraphsVertex.push_back(Vert1); // Добавляем если не нашли
     }
     if(!Find(sVert))//Проверяем наличие 2 вершины в графе
     {
         GraphVertex *Vert2 = new GraphVertex(sVert);
+        Vert2->number = this->GraphsVertex.size()-1;
         GraphsVertex.push_back(Vert2); // Добавляем если не нашли
     }
     auto fvert = Find(fVert);
@@ -108,7 +111,7 @@ void Graph::Input() //Отвечает за ПОЛНЫЙ ввод данных.
             Push(first_arg);
         else if(first_arg != "" && second_arg != "" && sweight != "" )
             Push(first_arg,second_arg,weight);
-        else
+        else if(input != "")
             cout << "Incorrect input" << endl;
     }while(input != ""); //Конец ввода
 

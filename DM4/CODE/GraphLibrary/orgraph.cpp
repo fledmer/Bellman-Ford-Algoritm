@@ -7,11 +7,13 @@ void Orgraph::Push(string fVert, string sVert)
     if(!Find(fVert)) //Проверяем наличие 1 вершины в графе
     {
         GraphVertex *Vert1 = new GraphVertex(fVert);
+        Vert1->number = this->GraphsVertex.size()-1;
         GraphsVertex.push_back(Vert1); // Добавляем если не нашли
     }
     if(!Find(sVert))//Проверяем наличие 2 вершины в графе
     {
         GraphVertex *Vert2 = new GraphVertex(sVert);
+        Vert2->number = this->GraphsVertex.size()-1;
         GraphsVertex.push_back(Vert2); // Добавляем если не нашли
     }
     auto fvert = Find(fVert);
@@ -24,11 +26,13 @@ void Orgraph::Push(string fVert, string sVert, int weight)
     if(!Find(fVert)) //Проверяем наличие 1 вершины в графе
     {
         GraphVertex *Vert1 = new GraphVertex(fVert);
+        Vert1->number = this->GraphsVertex.size();
         GraphsVertex.push_back(Vert1); // Добавляем если не нашли
     }
     if(!Find(sVert))//Проверяем наличие 2 вершины в графе
     {
         GraphVertex *Vert2 = new GraphVertex(sVert);
+        Vert2->number = this->GraphsVertex.size();
         GraphsVertex.push_back(Vert2); // Добавляем если не нашли
     }
     GraphVertex *fvert = Find(fVert);
@@ -161,4 +165,76 @@ void Orgraph::pMaximumDegree()
     cout <<"Maximum Degree IN: " <<maximumDegreeOUT << " Name: " << nameOUT << endl;
     cout <<"Maximum Degree OUT: " <<maximumDegreeIN << " Name: " << nameIN << endl;
 }
+
+const int infinity = 10000;
+bool negative_weight_find = false;
+bool infinity_weight_find = false;
+
+vector<int> Orgraph::FindShortestPath(int start_vertex)
+{
+    vector<int> path (GraphsVertex.size(),infinity);
+    path[start_vertex] = 0;
+    bool negative_weight_find = false;
+    for(int i = 0; i < GraphsVertex.size()-1;++i)
+    {
+            for(int vertex = 0; vertex < GraphsVertex.size();++vertex)    //Идем по вершинам, чтоб найти ребра
+            {
+                GraphVertex *start = GraphsVertex[vertex];
+                for(int edge = 0; edge < start->child.size(); ++edge)
+                {
+                    if(path[vertex] >= infinity)    break;
+                    int edge_weight = start->edge_weight[edge];
+                    if(edge_weight < 0)    negative_weight_find = true;
+                    GraphVertex *end = start->child[edge];
+                    path[end->number] = std::min(path[end->number],path[start->number] + edge_weight);
+                    //cout << path[end->number] << "   " << path[start->number] + edge_weight << endl;
+
+                }
+            }
+    }
+    return path;
+}
+
+void Orgraph::pAllSortestPath()
+{
+    cout << " ";
+    for(int x = 0; x < GraphsVertex.size();++x)
+    {
+        cout << " " <<GraphsVertex[x]->name;
+    }
+    cout << endl;
+    for(int vertex_start = 0; vertex_start < GraphsVertex.size(); ++vertex_start)
+    {
+        cout << GraphsVertex[vertex_start]->name << " ";
+        for(int x: FindShortestPath(vertex_start))
+        {
+            if(x == infinity)
+            {
+               cout << "I ";
+               infinity_weight_find = true;
+            }
+            else
+            {
+                cout << x << " ";
+            }
+        }
+        cout << endl;
+    }
+    if(negative_weight_find) cout << endl << "ATTENTION NAGATIVE WEIGHT WAS FOUNDED" << endl;
+    if(infinity_weight_find) cout << endl << "ATTENTION INFINITY WEIGHT WAS FOUNDED" << endl;
+}
 //Дочернии функции оценки орграфа
+
+
+void Orgraph::Analysis() //Производит анализ и его вывод.
+{
+    pMatrixOfIncidence();
+    cout << endl;
+    cout<< "Vertex: " << GraphsVertex.size() << " Arc: " << EdgeCount() << " Loop: " << LoopCount() << endl;
+    cout << endl;
+    pMaximumDegree();
+    cout << endl;
+    cout << ConnectCotegory() << endl;
+    cout << endl;
+    pAllSortestPath();
+}
