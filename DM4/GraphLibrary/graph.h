@@ -9,10 +9,17 @@ using namespace std;
 class Graph
 {
 protected:
-    GraphVertex* Find(string name);
-    GraphVertex* Find(GraphVertex *Vert);
-    void ClearGraphsVertex();
+
+    //Дочернии функции для анализа
     void FindHamiltoniaCycle(GraphVertex *vertex,vector<string> name_of_passed_vertex);
+    void virtual pMatrixOfIncidence();
+    int virtual EdgeCount();
+    int LoopCount();
+    void virtual pMaximumDegree();
+    bool FindPath(GraphVertex *start, GraphVertex *end,vector<string> storage);
+    bool FindPath(vector<GraphVertex *> GraphsVertex, GraphVertex *start, GraphVertex *end,vector<string> storage);
+    void PrintHamiltonianCycles();
+    //Дочернии функции для анализа
 public:
     Graph(){};
     ~Graph()
@@ -24,21 +31,15 @@ public:
     void virtual Push(string fVert, string sVert);
     void virtual Push(string fVert, string sVert,int weight);
     void virtual Push(string Vert);
+    string virtual ConnectCotegory();
 
     //Основные функции
     void Input();
     void Analysis();
+    GraphVertex* Find(string name);
+    GraphVertex* Find(GraphVertex *Vert);
     //Основные функции
-
-    void virtual pMatrixOfIncidence();
-    int virtual EdgeCount();
-    int LoopCount();
-    void virtual pMaximumDegree();
-    string virtual ConnectCotegory();
-    bool FindPath(GraphVertex *start, GraphVertex *end,vector<string> storage);
-    bool FindPath(vector<GraphVertex *> GraphsVertex, GraphVertex *start, GraphVertex *end,vector<string> storage);
-    void PrintHamiltonianCycles();
-
+    void ClearGraphsVertex();
 
 };
 
