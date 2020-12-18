@@ -12,7 +12,7 @@ class Orgraph:public Graph
    void pMaximumDegree();
    string ConnectCotegory();
    void pAllSortestPath();
-   std::vector<int> FindShortestPath(int start_vertex);
+vector<int> FindShortestPath(int start_vertex,vector<string> *pathVector);
     //Дочерние функции для анализа
 public:
    void Push(string fVert, string sVert, int weight);

@@ -170,7 +170,7 @@ const int infinity = 10000;
 bool negative_weight_find = false;
 bool infinity_weight_find = false;
 
-vector<int> Orgraph::FindShortestPath(int start_vertex)
+vector<int> Orgraph::FindShortestPath(int start_vertex,vector<string> *pathVector)
 {
     vector<int> path (GraphsVertex.size(),infinity);
     path[start_vertex] = 0;
@@ -187,6 +187,11 @@ vector<int> Orgraph::FindShortestPath(int start_vertex)
                     if(edge_weight < 0)    negative_weight_find = true;
                     GraphVertex *end = start->child[edge];
                     path[end->number] = std::min(path[end->number],path[start->number] + edge_weight);
+                    if(path[end->number] > path[start->number] + edge_weight)
+                    {
+                        path[end->number] = path[start->number] + edge_weight;
+                        (*pathVector)[edge] += end->name;
+                    }
                     //cout << path[end->number] << "   " << path[start->number] + edge_weight << endl;
 
                 }
@@ -197,6 +202,7 @@ vector<int> Orgraph::FindShortestPath(int start_vertex)
 
 void Orgraph::pAllSortestPath()
 {
+    vector<vector<string>*> pathMatrix;
     cout << " ";
     for(int x = 0; x < GraphsVertex.size();++x)
     {
@@ -206,7 +212,9 @@ void Orgraph::pAllSortestPath()
     for(int vertex_start = 0; vertex_start < GraphsVertex.size(); ++vertex_start)
     {
         cout << GraphsVertex[vertex_start]->name << " ";
-        for(int x: FindShortestPath(vertex_start))
+        vector <string> v(GraphsVertex.size());
+        vector<string>  *pathVector = &v;
+        for(int x: FindShortestPath(vertex_start,pathVector))
         {
             if(x == infinity)
             {
@@ -218,7 +226,16 @@ void Orgraph::pAllSortestPath()
                 cout << x << " ";
             }
         }
+        pathMatrix.push_back(pathVector);
         cout << endl;
+    }
+    cout << endl;
+    for(int vertex_start = 0; vertex_start < GraphsVertex.size(); ++vertex_start)
+    {
+        for(int vertex_end = 0; vertex_end < GraphsVertex.size(); ++vertex_end)
+        {
+            cout << "path in " << GraphsVertex[vertex_start]->name << " to " << GraphsVertex[vertex_end]->name << ": " << (*pathMatrix[vertex_start])[vertex_end] << endl;
+        }
     }
     if(negative_weight_find) cout << endl << "ATTENTION NAGATIVE WEIGHT WAS FOUNDED" << endl;
     if(infinity_weight_find) cout << endl << "ATTENTION INFINITY WEIGHT WAS FOUNDED" << endl;
